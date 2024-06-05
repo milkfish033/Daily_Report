@@ -455,7 +455,8 @@ def encode_file(file_path):
         
         return encoded.decode('utf-8')
    
-
+#Encode these generated images so that when sending email, you do not need to upload the images.
+#Instead, encoded code will do everything for you !
 image1 = encode_file('kb_7days_incr.png')
 image2 = encode_file('doc_7days_incr.png')
 image3 = encode_file('user_7days.png')
