@@ -5,6 +5,13 @@
 
 This project is an advanced automated reporting system designed for the efficient monitoring and management of a knowledge base (RAG, Retrieval-Augmented Generation) system. It integrates seamlessly with a MySQL database to fetch, process, and analyze data on knowledge base entries, documents, and user interactions. By calculating daily and cumulative metrics over the past seven days, the system generates comprehensive HTML reports featuring visual trend analyses and key statistical summaries. These reports, complete with embedded graphs, provide actionable insights into the system's performance and user engagement, thereby supporting data-driven decision-making and optimizing knowledge base management.
 
+***What will it look like when sending the html file in email***
+
+
+https://github.com/milkfish033/Daily_report-/assets/141232455/2abe7b2b-fa9f-4d67-825c-5221bbed7f91
+
+
+
 ***Before you start***
 
 ***(i)Set up Virtual Environment***
