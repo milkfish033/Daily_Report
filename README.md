@@ -7,11 +7,17 @@ This project is an advanced automated reporting system designed for the efficien
 
 ***Before you start***
 
-***(i)Set up Mysql***
+***(i)Set up Virtual Environment***
+
+***Why Virtual Environment***: Setting up a virtual environment in Python isolates project dependencies, ensuring that different projects can use different versions of the same libraries without conflicts. This isolation provides a consistent development environment, avoiding system-wide changes and simplifying dependency management.
+
+python3 -m venv .venv && source .venv/bin/activate
+
+***(ii)Set up Mysql***
 
 pip install mysql-connector-python
 
-***(ii)Set up matplotlib.pyplot***
+***(iii)Set up matplotlib.pyplot***
 
 Matplotlib.pyplot is a collection of functions that make matplotlib work like MATLAB. Each pyplot function makes some change to a figure: e.g., creates a figure, creates a plotting area in a figure, plots some lines in a plotting area, decorates the plot with labels, etc
 
