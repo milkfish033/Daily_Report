@@ -3,20 +3,21 @@ import matplotlib.pyplot as plt
 from datetime import datetime, timedelta, date
 import base64
 
-
+#Specify your own database here 
 db_config = {
-    'host': 'sh-cdb-lo8m5ucm.sql.tencentcdb.com',
-    'port': '59097',
-    'user': 'root',
-    'password': 'huayuan@2020',
-    'database': 'ai_repo'
+    'host': '*****',
+    'port': '****',
+    'user': '****',
+    'password': '******',
+    'database': '*****'
 }
 
 sql_template_cumulative_7days = """
--- 初始化运行总数变量
+-- initialize the total number 
 SET @running_total := 0;
 
--- 计算七天前的累计记录数
+
+#Calculate the past seven days count
 SET @initial_count = (
     SELECT COUNT(*)
     FROM #your_table# t
@@ -25,7 +26,7 @@ SET @initial_count = (
     #extra_conditions#
 );
 
--- 计算过去七天每一天的累计记录数
+-- Calculate the cumulative number of records for each of the past seven days
 SELECT
     d.date,
     @running_total := IF(d.date = #curr_date# - INTERVAL 7 DAY, @initial_count, @running_total) + IFNULL(t.daily_count, 0) AS cumulative_count
@@ -95,39 +96,52 @@ def get_data(stat_date):
     #add one day
     next_date = stat_date + timedelta(days=1)
 
-    # 连接到数据库
+    # connect to database
     conn = mysql.connector.connect(**db_config)
 
-    # 创建一个游标对象
+    # create a cursor 
     cursor = conn.cursor()
 
     # 知识库总数
     total_kb = get_total_kb(cursor)
+    
     # 新增用户知识库
     new_user_kbs = get_new_user_kbs(cursor, stat_date)
+    
     #新增知识库
     new_kbs = get_new_kbs(cursor, stat_date)
+    
     # 文档总数
     total_doc = get_total_doc(cursor)
+    
     # 新增用户文档
     # new_user_docs = get_new_user_docs(cursor, stat_date)
     new_user_docs = []
+    
     #新增文档
     new_docs = get_new_docs(cursor, stat_date)
+    
     # 对话总数
     total_chat = get_total_chat(cursor, stat_date)
+    
     #昨日对话用户总数
     yes_chat_user = get_chat_user(cursor, stat_date)
+    
     # 按用户统计对话次数
     chat_users = get_chat_users(cursor, stat_date)
+    
     # 按场景统计对话次数
     chat_scenes = get_chat_scenes(cursor, stat_date)
+    
     #昨日活跃用户
     yesterday_user = get_yesterday_user(cursor, stat_date)
+    
     # 知识库七日累计
     kb_7days_incr = get_kb_7days_incr(cursor, next_date)
+    
     # 文档七日累计
     doc_7days_incr = get_doc_7days_incr(cursor, next_date)
+    
     # 用户七日活跃度
     user_7days = get_user_7days(cursor, next_date)
 
@@ -161,7 +175,7 @@ def get_data(stat_date):
     user_counts = [result[1] for result in user_7days]
     plot(user_dates, user_counts, 'user_7days.png')
 
-    # 关闭游标和连接
+    # close cursor and connection 
     cursor.close()
     conn.close()
 
@@ -182,8 +196,9 @@ def get_data(stat_date):
         "yes_chat_user": yes_chat_user
     }
 
+
 def plot(x, y, filename):
-    # 绘制折线图
+    # Draw the line chart 
     plt.figure(figsize=(10, 5))
     plt.plot(x, y, marker='o')
     # plt.title('Data Count from Current Date to 7 Days Ago')
@@ -193,7 +208,7 @@ def plot(x, y, filename):
     plt.xticks(rotation=45)
     plt.tight_layout()
 
-    # 保存图表
+    # Save the graph 
     pic_filename = filename
     plt.savefig(pic_filename)
 
@@ -201,10 +216,10 @@ def plot(x, y, filename):
 def get_users(cursor):
     cursor.execute(f"select id, username, nickname from system_users")
 
-    # 获取列名
+    # Get the column 
     columns = [desc[0] for desc in cursor.description]
 
-    # 获取查询结果并转换为字典列表
+    # Get the result and turn it into dictionary 
     results = cursor.fetchall()
 
     users = {}
@@ -243,11 +258,13 @@ def get_chat_user(cursor, date):
         from ai_rag_kb
         where date(create_time) = %s;
                    """, (date,))
+    
     result = cursor.fetchone()
-
+    
     return result[0]
+    
 def get_new_user_kbs(cursor, date):
-    # 执行SQL查询
+    # execute the query 
     cursor.execute("""
         select kb.user_id, users.nickname, count(*) as kb_num 
         from ai_rag_kb kb
@@ -256,10 +273,10 @@ def get_new_user_kbs(cursor, date):
         group by kb.user_id, users.nickname order by kb_num desc
     """, (date,))
 
-    # 获取列名
+    # Get the column
     columns = [desc[0] for desc in cursor.description]
 
-    # 获取查询结果并转换为字典列表
+    # Get the result and turn it into a dictionary 
     results = cursor.fetchall()
     result_dicts = [dict(zip(columns, row)) for row in results]
 
@@ -267,6 +284,7 @@ def get_new_user_kbs(cursor, date):
 
     # for res in result_dicts[:10]:
     #     print(f"用户[{res['nickname']}]新增知识库：{res['kb_num']}")
+    
     return result_dicts
 
 def get_new_kbs(cursor, date):
@@ -293,7 +311,7 @@ def get_total_doc(cursor):
 
 def get_kb_7days_incr(cursor, date_excluded):
     sql = get_cumulative_sql('ai_rag_kb', date_excluded)
-    # 执行查询
+    # execute the query
     for result in cursor.execute(sql, multi=True):
         if result.with_rows:
             results = result.fetchall()
@@ -304,7 +322,7 @@ def get_kb_7days_incr(cursor, date_excluded):
 
 def get_doc_7days_incr(cursor, date_excluded):
     sql = get_cumulative_sql('ai_rag_kb_doc', date_excluded)
-    # 执行查询
+    # execute query 
     for result in cursor.execute(sql, multi=True):
         if result.with_rows:
             results = result.fetchall()
@@ -339,14 +357,15 @@ def get_new_docs(cursor, date):
         where create_time like %s     
                    """ , (f'%{date}%',)
         )
+    
     result = cursor.fetchone()
 
     return result[0]
 
-    # 获取列名
+    # Get the column 
     columns = [desc[0] for desc in cursor.description]
 
-    # 获取查询结果并转换为字典列表
+    # Get the result and turn it into dictionary 
     results = cursor.fetchall()
     result_dicts = [dict(zip(columns, row)) for row in results]
 
@@ -361,14 +380,14 @@ def get_new_docs(cursor, date):
 
 
 def get_total_chat(cursor, date):
-    # 执行SQL查询
+    # Execute the query 
     cursor.execute("""
         select count(*) as chat_num 
         from ai_llm_model_chat 
         where platform = 'huayuan_rag' and date(create_time)=%s
     """, (date,))
 
-    # 获取查询结果并转换为字典列表
+    #Get the result and turn it into a dictionary 
     result = cursor.fetchone()
 
     # print(f"总对话次数：{result}")
@@ -377,7 +396,7 @@ def get_total_chat(cursor, date):
 
 
 def get_chat_users(cursor, date):
-    # 执行SQL查询
+    # Execute the query 
     cursor.execute("""
         select chat.user_id, users.nickname, count(*) as chat_num 
         from ai_llm_model_chat chat
@@ -386,10 +405,10 @@ def get_chat_users(cursor, date):
         group by chat.user_id, users.nickname order by chat_num desc 
     """, (date,))
 
-    # 获取列名
+    # Get the column
     columns = [desc[0] for desc in cursor.description]
 
-    # 获取查询结果并转换为字典列表
+    # Get the result and turn it into a dictionary 
     results = cursor.fetchall()
     result_dicts = [dict(zip(columns, row)) for row in results]
 
@@ -406,7 +425,7 @@ def get_chat_users(cursor, date):
 
 
 def get_chat_scenes(cursor, date):
-    # 执行SQL查询
+    # Execute the query 
     cursor.execute(f"""
         select scene.name as scene_name, users.nickname, count(*) as chat_num 
         from ai_llm_model_chat chat 
@@ -417,10 +436,10 @@ def get_chat_scenes(cursor, date):
         order by chat_num desc
     """)
 
-    # 获取列名
+    # Get the column 
     columns = [desc[0] for desc in cursor.description]
 
-    # 获取查询结果并转换为字典列表
+    # Get the result and turn it into a dictionary 
     results = cursor.fetchall()
     result_dicts = [dict(zip(columns, row)) for row in results]
 
@@ -433,6 +452,7 @@ def get_chat_scenes(cursor, date):
 def encode_file(file_path):
     with open(file_path, 'rb') as file:
         encoded = base64.b64encode(file.read())
+        
         return encoded.decode('utf-8')
    
 
@@ -443,10 +463,10 @@ image3 = encode_file('user_7days.png')
 if __name__ == '__main__':
     today = datetime.now().date()
     yesterday = today - timedelta(days =1)
-    print(f"今天: {today}")
-    print('------------------------')
+
     data = get_data(date(yesterday.year, yesterday.month, yesterday.day))
-    print("-----------------------------------")
+ 
+    # Read the template and replace it with updated data 
     with open('report.html', 'r') as f:
         content = f.read()
 
@@ -461,6 +481,9 @@ if __name__ == '__main__':
     content = content.replace('#image22#', image2)
     content = content.replace('#image33#', image3)
 
+    #Use a loop to generate the top 10 users. If there are less than 10 active users yesterday, 
+    #it will generate as many as there are 
+    
     top10_chat_users = ""
     for res in data['chat_users'][:10]:
         top10_chat_users += (f"<tr><td>{res['nickname']}</td><td>{res['chat_num']}</td></tr>\n")
@@ -470,6 +493,7 @@ if __name__ == '__main__':
     for res in data['chat_scenes'][:10]:
         top10_chat_kcb += (f"<tr><td>{res['scene_name']}</td><td>{res['chat_num']}</td></tr>\n")
     content = content.replace('#TOP10场景', top10_chat_kcb)
-
+    
+    #Write the updated code into a new file
     with open('new.html', 'w') as f:
         f.write(content)
