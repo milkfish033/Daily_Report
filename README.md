@@ -1,5 +1,25 @@
 # Daily_report
-#Sql #Python #Html #Email
+#Sql #Python #Html #Email sending
+
+Contact info: mingyu@bu.edu
+
+
+***last update***
+
+06/06/2024
+
+
+***What's new:***
+
+(1) Include annotations for each point with its corresponding value on the line chart
+
+(2) Support sending email from python script now. Adding correct sever and port enables user directly to send email directly
+
+
+***What's needed to done in the future:***
+
+(1) Creating a timer so that it could run periodically. For example, it will generate a daily report every morning and send it to your boss. 
+
 
 ***What does this project do***
 
