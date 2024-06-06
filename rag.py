@@ -2,6 +2,11 @@ import mysql.connector
 import matplotlib.pyplot as plt
 from datetime import datetime, timedelta, date
 import base64
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.mime.base import MIMEBase
+from email import encoders
 
 #Specify your own database here 
 db_config = {
@@ -196,19 +201,21 @@ def get_data(stat_date):
         "yes_chat_user": yes_chat_user
     }
 
-
+#Draw the line chart
 def plot(x, y, filename):
-    # Draw the line chart 
+
     plt.figure(figsize=(10, 5))
     plt.plot(x, y, marker='o')
-    # plt.title('Data Count from Current Date to 7 Days Ago')
-    # plt.xlabel('Date')
-    # plt.ylabel('Count')
+    
+    # Annotate each point with its value
+    for i in range(len(x)):
+        plt.text(x[i], y[i], str(y[i]), ha='center', va='bottom', fontsize=14, weight='bold')  # Adjust fontsize here
+        
     plt.grid(True)
     plt.xticks(rotation=45)
     plt.tight_layout()
 
-    # Save the graph 
+    # Save the file 
     pic_filename = filename
     plt.savefig(pic_filename)
 
@@ -498,3 +505,31 @@ if __name__ == '__main__':
     #Write the updated code into a new file
     with open('new.html', 'w') as f:
         f.write(content)
+
+# Set up for email 
+smtp_server = '******'
+smtp_port = '***'
+smtp_user = 'acc@.com'
+smtp_password = '******'
+recipient_email = '*****@.com'
+subject = '*****'
+body = content 
+
+# Create message in email 
+msg = MIMEMultipart('alternative')
+msg['From'] = smtp_user
+msg['To'] = recipient_email
+msg['Subject'] = subject
+
+msg.attach(MIMEText(body, 'html'))
+
+try:
+    with smtplib.SMTP_SSL(smtp_server, smtp_port) as server:  # Use SMTP_SSL for SSL connection
+        server.login(smtp_user, smtp_password)
+        server.sendmail(smtp_user, recipient_email, msg.as_string())
+    print('Email sent successfully.')
+except Exception as e:
+    print('Error sending email:', e)
+
+
+
