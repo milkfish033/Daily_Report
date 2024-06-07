@@ -1,12 +1,12 @@
 # Daily_report
-#Sql #Python #Html #Email sending
+#MySql #Python #Html #Email_sending
 
 Contact info: mingyu@bu.edu
 
 
 ***last update***
 ----------------------------------------------------------------------------------------------------------------------------------------------------
-06/06/2024
+06/07/2024
 
 
 ***What's new:***
@@ -16,6 +16,8 @@ Contact info: mingyu@bu.edu
 (2) Support sending email from python script now. Adding correct sever and port enables user directly to send email directly
 
 (3) Adjusting the settings so it could fit the screen size of both mobile phone and computer now 
+
+(4) Adding schedule module, support timed sending 
 
 ***What's needed to done in the future:***
 
@@ -43,6 +45,8 @@ python3 -m venv .venv && source .venv/bin/activate
 ***(ii)Set up Mysql***
 
 pip install mysql-connector-python
+
+pip install mysql-connector-python schedule matplotlib
 
 ***(iii)Set up matplotlib.pyplot***
 
