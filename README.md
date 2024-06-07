@@ -39,7 +39,7 @@ https://github.com/milkfish033/Daily_report-/assets/141232455/2abe7b2b-fa9f-4d67
 ***(i)Set up Virtual Environment***
 
 ***Why Virtual Environment***: 
->Setting up a virtual environment in Python isolates project dependencies, ensuring that different projects can use different versions of the same libraries without conflicts. This isolation provides a consistent development environment, avoiding system-wide changes and simplifying dependency management.
+Setting up a virtual environment in Python isolates project dependencies, ensuring that different projects can use different versions of the same libraries without conflicts. This isolation provides a consistent development environment, avoiding system-wide changes and simplifying dependency management.
 
 >python3 -m venv .venv && source .venv/bin/activate
 
