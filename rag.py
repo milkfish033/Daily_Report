@@ -5,8 +5,8 @@ import base64
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from email.mime.base import MIMEBase
-from email import encoders
+import time
+import schedule 
 
 #Specify your own database here 
 db_config = {
@@ -468,7 +468,7 @@ image1 = encode_file('kb_7days_incr.png')
 image2 = encode_file('doc_7days_incr.png')
 image3 = encode_file('user_7days.png')
 
-if __name__ == '__main__':
+def job():
     today = datetime.now().date()
     yesterday = today - timedelta(days =1)
 
@@ -506,30 +506,36 @@ if __name__ == '__main__':
     with open('new.html', 'w') as f:
         f.write(content)
 
-# Set up for email 
-smtp_server = '******'
-smtp_port = '***'
-smtp_user = 'acc@.com'
-smtp_password = '******'
-recipient_email = '*****@.com'
-subject = '*****'
-body = content 
+    # Set up for email 
+    smtp_server = '******'
+    smtp_port = '***'
+    smtp_user = 'acc@.com'
+    smtp_password = '******'
+    recipient_email = '*****@.com'
+    subject = '*****'
+    body = content 
+    
+    # Create message in email 
+    msg = MIMEMultipart('alternative')
+    msg['From'] = smtp_user
+    msg['To'] = recipient_email
+    msg['Subject'] = subject
+    
+    msg.attach(MIMEText(body, 'html'))
 
-# Create message in email 
-msg = MIMEMultipart('alternative')
-msg['From'] = smtp_user
-msg['To'] = recipient_email
-msg['Subject'] = subject
+    try:
+        with smtplib.SMTP_SSL(smtp_server, smtp_port) as server:  # Use SMTP_SSL for SSL connection
+            server.login(smtp_user, smtp_password)
+            server.sendmail(smtp_user, recipient_email, msg.as_string())
+        print('Email sent successfully.')
+    except Exception as e:
+        print('Error sending email:', e)
 
-msg.attach(MIMEText(body, 'html'))
+#this file will be executed every 18:00 
+schedule.every().day.at("18:00").do(job)
 
-try:
-    with smtplib.SMTP_SSL(smtp_server, smtp_port) as server:  # Use SMTP_SSL for SSL connection
-        server.login(smtp_user, smtp_password)
-        server.sendmail(smtp_user, recipient_email, msg.as_string())
-    print('Email sent successfully.')
-except Exception as e:
-    print('Error sending email:', e)
-
-
+# Keep the script running
+while True:
+    schedule.run_pending()
+    time.sleep(1)
 
