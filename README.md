@@ -21,7 +21,7 @@ Contact info: mingyu@bu.edu
 
 ***What's needed to done in the future:***
 
-(1) Creating a timer so that it could run periodically. For example, it will generate a daily report every morning and send it to your boss. 
+(1) Creating a timer so that it could run periodically. For example, it will generate a daily report every morning and send it to your boss.✅(Solved)
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 ***What does this project do***
