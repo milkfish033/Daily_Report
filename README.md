@@ -4,12 +4,12 @@
 🐳Contact info: mingyu@bu.edu
 
 
-***Lastest update***
+🪼***Lastest update***
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 06/07/2024
 
 
-***What's new:***
+🦑***What's new:***
 
 (1) Include annotations for each point with its corresponding value on the line chart
 
@@ -19,7 +19,7 @@
 
 (4) Adding schedule module, support timed sending 
 
-***What's needed to done in the future:***
+🦞***What's needed to done in the future:***
 
 >(1) Creating a timer so that it could run periodically. For example, it will generate a daily report every morning and send it to your boss.✅(Solved)
 
