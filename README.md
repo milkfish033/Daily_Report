@@ -1,7 +1,7 @@
 # Daily_report
 #MySql #Python #Html #Email_sending
 
-Contact info: mingyu@bu.edu
+🐳Contact info: mingyu@bu.edu
 
 
 ***Lastest update***
